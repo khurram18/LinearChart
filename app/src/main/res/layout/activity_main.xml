@@ -12,15 +12,10 @@
         android:layout_marginStart = "20dp"
         android:layout_marginEnd = "20dp"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="#fffae4"/>
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@android:color/black"/>-->
-
+        />
 </android.support.constraint.ConstraintLayout>

@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -54,40 +55,62 @@ protected void onDraw(Canvas canvas) {
     final int width = getWidth();
     final int height = getHeight();
 
-    final int padding = 50;
+    final int topPadding = 50;
     int bottomPadding = 100;
 
     int step = (height - bottomPadding) / (maxY + 1);
     for (int i = 0; i <= maxY; ++i) {
         path.reset();
-        int y = (i * step) + padding;
+        int y = (i * step) + topPadding;
         ys[i] = y;
         path.moveTo(0, y);
         path.lineTo(width, y);
         canvas.drawPath(path, gridLinePaint);
     }
     ArrayUtils.reverse(ys);
-    step = (width - (2 * padding)) / numberOfXAxisPoints;
+    final int horizontalPadding = 50;
+    step = (width - (2 * horizontalPadding)) / (numberOfXAxisPoints - 1);
+    for (int i = 0; i < numberOfXAxisPoints; ++i) {
+        centers[i].set((step * i) + horizontalPadding, ys[yAxisPoints[i]]);
+    }
+
+    path.reset();
+    path.moveTo(centers[0].x, centers[0].y);
+    for (int i = 1; i < numberOfXAxisPoints; ++i) {
+        path.lineTo(centers[i].x, centers[i].y);
+    }
+    canvas.drawPath(path, graphPaint);
+    final float radius = 20;
     for (int i = 0; i < numberOfXAxisPoints; ++i) {
         path.reset();
-        path.moveTo((step * i) + padding, ys[yAxisPoints[i]]);
-        path.addCircle((step * i) + (2 * padding), ys[yAxisPoints[i]], radius, Path.Direction.CW);
+        path.addCircle(centers[i].x, centers[i].y, radius, Path.Direction.CCW);
+        if (i == numberOfXAxisPoints - 1) {
+            graphFillPaint.setColor(graphColor);
+        }
+        canvas.drawPath(path, graphFillPaint);
         canvas.drawPath(path, graphPaint);
+    }
+    int textY = height - maxTitleHeight;
+    for (int i = 0; i < numberOfXAxisPoints; ++i) {
+        canvas.drawText(titles[i], centers[i].x - (rects[i].width() / 2), textY, gridLinePaint);
     }
 }
 private void reload() {
     if (linearChartDataSource == null) {
         return;
     }
-    gridColor = linearChartDataSource.gridColor(this);
+    int gridColor = linearChartDataSource.gridColor(this);
     graphColor = linearChartDataSource.graphLineColor(this);
     numberOfXAxisPoints = linearChartDataSource.numberOfXAxisPoints(this);
     titles = linearChartDataSource.xAxisTitles(this);
     yAxisPoints = new int[numberOfXAxisPoints];
+    centers = new Point[numberOfXAxisPoints];
     for (int i = 0; i < numberOfXAxisPoints; ++i) {
+        centers[i] = new Point();
         yAxisPoints[i] = linearChartDataSource.yAxisPointForXPoint(this, i);
     }
-    textSize = linearChartDataSource.titleTextSize(this);
+    float textSize = linearChartDataSource.titleTextSize(this);
+    gridLinePaint.setTextSize(textSize);
     rects = new Rect[titles.length];
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     paint.setTypeface(Typeface.DEFAULT);
@@ -117,25 +140,25 @@ private void init() {
     graphPaint.setStyle(Paint.Style.STROKE);
     graphPaint.setStrokeWidth(2);
 
-    Point point;
+    graphFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    graphFillPaint.setStyle(Paint.Style.FILL);
+    graphFillPaint.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
 }
 private boolean isDataAvailable() { return linearChartDataSource != null; }
 private LinearChartDataSource linearChartDataSource;
 
-private int gridColor;
 private int graphColor;
 private int numberOfXAxisPoints;
 private int[] yAxisPoints;
 private String[] titles;
-private float textSize;
 private Rect[] rects;
 private int maxTitleHeight = Integer.MIN_VALUE;
 private int maxY;
 
-private final float radius = 20;
 private Path path;
 private Paint gridLinePaint;
 private Paint graphPaint;
+private Paint graphFillPaint;
 private int[] ys;
-
+private Point[] centers;
 }
