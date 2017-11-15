@@ -1,4 +1,4 @@
-package com.bitsparlour.linearchart;
+package com.bitsparlour.linearchartdemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

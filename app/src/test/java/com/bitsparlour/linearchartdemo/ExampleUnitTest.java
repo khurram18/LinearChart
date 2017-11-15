@@ -1,4 +1,4 @@
-package com.bitsparlour.linearchart;
+package com.bitsparlour.linearchartdemo;
 
 import org.junit.Test;
 

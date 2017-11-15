@@ -1,4 +1,4 @@
-package com.bitsparlour.linearchart;
+package com.bitsparlour.linearchartdemo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
