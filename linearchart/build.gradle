@@ -1,5 +1,27 @@
 apply plugin: 'com.android.library'
+ext {
+    bintrayRepo = 'linearchart'
+    bintrayName = 'linearchart'
 
+    publishedGroupId = 'com.bitsparlour'
+    libraryName = 'linearchart'
+    artifact = 'linearchart'
+
+    libraryDescription = 'An android library for drawing linear chart.'
+
+    siteUrl = 'https://github.com/khurram18/LinearChart'
+    gitUrl = 'https://github.com/khurram18/LinearChart.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'khurram' // Maven plugin uses this. I don't know if it needs to be anything special.
+    developerName = 'Khurram Shehzad'
+    developerEmail = 'khurram.pak522@gmail.com'
+
+    licenseName = 'The MIT License (MIT)'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
 android {
     compileSdkVersion 26
 
@@ -32,4 +54,116 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+}
+
+// Maven section
+// You shouldn't need to change anything. It just uses the
+// values you set above.
+
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = publishedGroupId // Maven Group ID for the artifact
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+
+                // Add your description here
+                name libraryName
+                description libraryDescription
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name licenseName
+                        url licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id developerId
+                        name developerName
+                        email developerEmail
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+// Bintray section
+// As long as you add bintray.user and bintray.apikey to the local.properties
+// file, you shouldn't have to change anything here. The reason you
+// don't just write them here is so that they won't be publicly visible
+// in GitHub or wherever your source control is.
+
+apply plugin: 'com.jfrog.bintray'
+
+version = libraryVersion
+
+if (project.hasProperty("android")) { // Android libraries
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+} else { // Java libraries
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+            gpg {
+                // optional GPG encryption. Default is false.
+                sign = false
+                //passphrase = properties.getProperty("bintray.gpg.password")
+            }
+        }
+    }
 }
