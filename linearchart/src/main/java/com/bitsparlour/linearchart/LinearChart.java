@@ -54,10 +54,8 @@ protected void onDraw(Canvas canvas) {
     }
     final int width = getWidth();
     final int height = getHeight();
-
     final int topPadding = 50;
     int bottomPadding = 100;
-
     int step = (height - bottomPadding) / (maxY + 1);
     for (int i = 0; i <= maxY; ++i) {
         path.reset();
@@ -81,6 +79,7 @@ protected void onDraw(Canvas canvas) {
     }
     canvas.drawPath(path, graphPaint);
     final float radius = 20;
+    graphFillPaint.setColor(whiteColor);
     for (int i = 0; i < numberOfXAxisPoints; ++i) {
         path.reset();
         path.addCircle(centers[i].x, centers[i].y, radius, Path.Direction.CCW);
@@ -142,7 +141,8 @@ private void init() {
 
     graphFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     graphFillPaint.setStyle(Paint.Style.FILL);
-    graphFillPaint.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
+    whiteColor = ContextCompat.getColor(getContext(), android.R.color.white);
+    graphFillPaint.setColor(whiteColor);
 }
 private boolean isDataAvailable() { return linearChartDataSource != null; }
 private LinearChartDataSource linearChartDataSource;
@@ -161,4 +161,5 @@ private Paint graphPaint;
 private Paint graphFillPaint;
 private int[] ys;
 private Point[] centers;
+private int whiteColor;
 }
