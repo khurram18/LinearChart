@@ -19,7 +19,9 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * Created by Khurram Shehzad on 15 November 2017
  */
-
+// https://code.tutsplus.com/tutorials/creating-and-publishing-an-android-library--cms-24582
+// https://stackoverflow.com/questions/38211153/distribute-android-library-in-jcenter-to-use-in-gradle/43951025#43951025
+// https://stackoverflow.com/questions/41084693/how-to-update-library-for-new-version-in-bintray/44623870#44623870
 public class LinearChart extends View {
 public LinearChart(Context context) {
     super(context);
