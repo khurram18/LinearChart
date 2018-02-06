@@ -15,6 +15,9 @@ protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     LinearChart linearChart = findViewById(R.id.linearChart);
+    float dimension = getResources().getDimension(R.dimen.line_width);
+    linearChart.setGraphLineWidth(dimension);
+    linearChart.setGridLineWidth(dimension);
     linearChart.setLinearChartDataSource(linearChartDataSource);
 }
 private final LinearChartDataSource linearChartDataSource = new LinearChartDataSource() {
