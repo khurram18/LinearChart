@@ -47,6 +47,17 @@ public void setLinearChartDataSource(LinearChartDataSource linearChartDataSource
     reload();
     invalidate();
 }
+
+public void setGraphLineWidth(float graphLineWidth) {
+    this.graphLineWidth = graphLineWidth;
+    graphPaint.setStrokeWidth(graphLineWidth);
+}
+
+public void setGridLineWidth(float gridLineWidth) {
+    this.gridLineWidth = gridLineWidth;
+    gridLinePaint.setStrokeWidth(graphLineWidth);
+}
+
 @Override
 protected void onDraw(Canvas canvas) {
     if (!isDataAvailable()) {
@@ -130,14 +141,18 @@ private void reload() {
 }
 private void init() {
 
+    float dimension = getContext().getResources().getDimension(R.dimen.default_line_width);
+    gridLineWidth = dimension;
+    graphLineWidth = dimension;
+    
     path = new Path();
     gridLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    gridLinePaint.setStrokeWidth(2);
+    gridLinePaint.setStrokeWidth(gridLineWidth);
     gridLinePaint.setStyle(Paint.Style.STROKE);
 
     graphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     graphPaint.setStyle(Paint.Style.STROKE);
-    graphPaint.setStrokeWidth(2);
+    graphPaint.setStrokeWidth(graphLineWidth);
 
     graphFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     graphFillPaint.setStyle(Paint.Style.FILL);
@@ -154,6 +169,8 @@ private String[] titles;
 private Rect[] rects;
 private int maxTitleHeight = Integer.MIN_VALUE;
 private int maxY;
+private float graphLineWidth;
+private float gridLineWidth;
 
 private Path path;
 private Paint gridLinePaint;
